@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude Code 中转站安装指南</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2563EB;
+            --primary-dark: #1e40af;
+            --secondary: #3B82F6;
+            --accent: #F97316;
+            --bg: #ffffff;
+            --bg-subtle: #F8FAFC;
+            --text: #1E293B;
+            --text-muted: #64748b;
+            --border: #E2E8F0;
+            --code-bg: #0f172a;
+            --code-text: #e2e8f0;
+            --info-bg: #eff6ff;
+            --info-border: #3b82f6;
+            --warning-bg: #fffbeb;
+            --warning-border: #f59e0b;
+        }
+
+        body {
+            font-family: 'Open Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-subtle);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: var(--bg);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .logo-accent {
+            color: var(--primary);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-description {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-button {
+            font-family: 'Poppins', sans-serif;
+            padding: 0.75rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: -1px;
+        }
+
+        .tab-button:hover {
+            color: var(--primary);
+        }
+
+        .tab-button.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Content */
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Steps */
+        .step {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-number {
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 0.9375rem;
+            flex-shrink: 0;
+        }
+
+        .step-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text);
+            margin: 0;
+        }
+
+        .step-description {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        /* Code Blocks */
+        .code-wrapper {
+            margin: 1.5rem 0;
+        }
+
+        .code-header {
+            background: #1e293b;
+            color: var(--code-text);
+            padding: 0.75rem 1rem;
+            border-radius: 6px 6px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8125rem;
+            font-family: 'Consolas', 'Monaco', monospace;
+        }
+
+        .code-label {
+            opacity: 0.7;
+        }
+
+        pre {
+            background: var(--code-bg);
+            color: var(--code-text);
+            padding: 1rem;
+            border-radius: 0 0 6px 6px;
+            overflow-x: auto;
+            margin: 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.6;
+        }
+
+        code {
+            font-family: inherit;
+        }
+
+        .copy-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 0.375rem 0.75rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8125rem;
+            transition: all 0.2s ease;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        .copy-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .copy-button.copied {
+            background: #10b981;
+            border-color: #10b981;
+        }
+
+        /* Alert Boxes */
+        .alert {
+            padding: 1rem;
+            border-radius: 6px;
+            margin: 1.5rem 0;
+            border-left: 3px solid;
+            font-size: 0.9375rem;
+        }
+
+        .alert-info {
+            background: var(--info-bg);
+            border-color: var(--info-border);
+            color: #1e40af;
+        }
+
+        .alert-warning {
+            background: var(--warning-bg);
+            border-color: var(--warning-border);
+            color: #92400e;
+        }
+
+        .alert strong {
+            font-weight: 600;
+        }
+
+        /* Subsections */
+        .subsection {
+            margin: 2rem 0;
+        }
+
+        .subsection-title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 1rem;
+        }
+
+        /* Lists */
+        ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            padding-left: 1.5rem;
+            position: relative;
+            margin: 0.5rem 0;
+            color: var(--text);
+        }
+
+        ul li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0.6rem;
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+        }
+
+        /* Links */
+        a {
+            color: var(--primary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
+
+        /* Inline Code */
+        .inline-code {
+            background: var(--bg-subtle);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.875rem;
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        /* Footer */
+        footer {
+            max-width: 1200px;
+            margin: 3rem auto 2rem;
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            border-top: 1px solid var(--border);
+        }
+
+        footer a {
+            color: var(--primary);
+            font-weight: 500;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .page-title {
+                font-size: 2rem;
+            }
+
+            .step {
+                padding: 1.5rem;
+            }
+
+            .step-title {
+                font-size: 1.25rem;
+            }
+
+            .tab-button {
+                padding: 0.625rem 1rem;
+                font-size: 0.875rem;
+            }
+
+            pre {
+                font-size: 0.8125rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <span class="logo-accent">Claude</span> Code 中转站
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <h1 class="page-title">安装指南</h1>
+        <p class="page-description">快速配置 Claude Code CLI 工具，开始使用 AI 编程助手</p>
+
+        <!-- Platform Tabs -->
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('windows')">
+                <svg class="tab-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M0,0 L10,1.5 L10,11 L0,11 Z M11,1.2 L24,3 L24,11 L11,11 Z M0,13 L10,13 L10,22.5 L0,24 Z M11,13 L24,13 L24,21 L11,22.8 Z"/>
+                </svg>
+                Windows
+            </button>
+            <button class="tab-button" onclick="switchTab('macos')">
+                <svg class="tab-icon" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.71,19.5C17.88,20.74 17,21.95 15.66,21.97C14.32,22 13.89,21.18 12.37,21.18C10.84,21.18 10.37,21.95 9.1,22C7.79,22.05 6.8,20.68 5.96,19.47C4.25,17 2.94,12.45 4.7,9.39C5.57,7.87 7.13,6.91 8.82,6.88C10.1,6.86 11.32,7.75 12.11,7.75C12.89,7.75 14.37,6.68 15.92,6.84C16.57,6.87 18.39,7.1 19.56,8.82C19.47,8.88 17.39,10.1 17.41,12.63C17.44,15.65 20.06,16.66 20.09,16.67C20.06,16.74 19.67,18.11 18.71,19.5M13,3.5C13.73,2.67 14.94,2.04 15.94,2C16.07,3.17 15.6,4.35 14.9,5.19C14.21,6.04 13.07,6.7 11.95,6.61C11.8,5.46 12.36,4.26 13,3.5Z"/>
+                </svg>
+                macOS
+            </button>
+        </div>
+
+        <!-- Windows Content -->
+        <div id="windows" class="tab-content active">
+            <!-- Step 1 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div>
+                        <h2 class="step-title">检查 Git 安装</h2>
+                    </div>
+                </div>
+                <p class="step-description">Git 是版本控制工具，Claude Code 依赖它来管理代码。首先验证系统是否已安装。</p>
+
+                <div class="code-wrapper">
+                    <div class="code-header">
+                        <span class="code-label">PowerShell / CMD</span>
+                        <button class="copy-button" onclick="copyCode(this, 'git --version')">复制</button>
+                    </div>
+                    <pre><code>git --version</code></pre>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>如果显示版本号：</strong>说明已安装，可跳过此步骤<br>
+                    <strong>如果提示未找到命令：</strong>请按以下方式安装
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">安装 Git</h3>
+                    <ul>
+                        <li>方法1：访问 <a href="https://git-scm.com/download/win" target="_blank">Git 官网</a> 下载安装包，按默认选项安装</li>
+                        <li>方法2：使用提供的离线安装包</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div>
+                        <h2 class="step-title">安装 Node.js</h2>
+                    </div>
+                </div>
+                <p class="step-description">Node.js 是 JavaScript 运行环境，Claude Code 基于此构建。要求版本 ≥ 18</p>
+
+                <div class="alert alert-warning">
+                    <strong>重要提示：</strong>Node.js 版本必须大于或等于 18。如果已安装旧版本，请升级到最新 LTS 版本。
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">安装方式</h3>
+                    <ul>
+                        <li>方法1：访问 <a href="https://nodejs.org/" target="_blank">Node.js 官网</a>，下载 LTS 版本的 .msi 安装包</li>
+                        <li>方法2：使用提供的离线安装包</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div>
+                        <h2 class="step-title">验证 Node.js 安装</h2>
+                    </div>
+                </div>
+                <p class="step-description">确认 Node.js 和 npm 已正确安装</p>
+
+                <div class="code-wrapper">
+                    <div class="code-header">
+                        <span class="code-label">PowerShell / CMD</span>
+                        <button class="copy-button" onclick="copyCode(this, 'node --version\nnpm --version')">复制</button>
+                    </div>
+                    <pre><code>node --version
+npm --version</code></pre>
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>PowerShell 执行策略问题：</strong><br>
+                    如果 PowerShell 在执行 npm.ps1 时被拦截，请先运行以下命令：
+                </div>
+
+                <div class="code-wrapper">
+                    <div class="code-header">
+                        <span class="code-label">PowerShell (管理员权限)</span>
+                        <button class="copy-button" onclick="copyCode(this, 'Set-ExecutionPolicy RemoteSigned -Scope CurrentUser')">复制</button>
+                    </div>
+                    <pre><code>Set-ExecutionPolicy RemoteSigned -Scope CurrentUser</code></pre>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div>
+                        <h2 class="step-title">安装 Claude Code</h2>
+                    </div>
+                </div>
+                <p class="step-description">使用 npm 全局安装 Claude Code CLI 工具</p>
+
+                <div class="code-wrapper">
+                    <div class="code-header">
+                        <span class="code-label">PowerShell / CMD</span>
+                        <button class="copy-button" onclick="copyCode(this, 'npm install -g @anthropic-ai/claude-code --registry=https://registry.npmmirror.com')">复制</button>
+                    </div>
+                    <pre><code>npm install -g @anthropic-ai/claude-code --registry=https://registry.npmmirror.com</code></pre>
+                </div>
+
+                <div class="alert alert-info">
+                    命令使用国内镜像源 (npmmirror.com) 以提高下载速度
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <div>
+                        <h2 class="step-title">配置环境变量</h2>
+                    </div>
+                </div>
+                <p class="step-description">设置中转站地址和 API 密钥，三种方式任选其一</p>
+
+                <!-- Temporary -->
+                <div class="subsection">
+                    <h3 class="subsection-title">临时配置（仅当前会话）- PowerShell</h3>
+                    <div class="code-wrapper">
+                        <div class="code-header">
+                            <span class="code-label">PowerShell</span>
+                            <button class="copy-button" onclick="copyCode(this, '$env:ANTHROPIC_BASE_URL = \"https://ai.facai.cloudns.org\"\n$env:ANTHROPIC_AUTH_TOKEN = \"你的API密钥\"')">复制</button>
+                        </div>
+                        <pre><code>$env:ANTHROPIC_BASE_URL = "https://ai.facai.cloudns.org"
+$env:ANTHROPIC_AUTH_TOKEN = "你的API密钥"</code></pre>
+                    </div>
+                    <div class="alert alert-info">
+                        请将 <code class="inline-code">你的API密钥</code> 替换为在管理台 API 密钥管理中创建的实际密钥
+                    </div>
+                </div>
+
+                <!-- Permanent PowerShell -->
+                <div class="subsection">
+                    <h3 class="subsection-title">永久配置（用户级）- PowerShell</h3>
+                    <div class="code-wrapper">
+                        <div class="code-header">
+                            <span class="code-label">PowerShell</span>
+                            <button class="copy-button" onclick="copyCode(this, '[System.Environment]::SetEnvironmentVariable(\"ANTHROPIC_BASE_URL\",\"https://ai.facai.cloudns.org\",[System.EnvironmentVariableTarget]::User)\n[System.Environment]::SetEnvironmentVariable(\"ANTHROPIC_AUTH_TOKEN\",\"你的API密钥\",[System.EnvironmentVariableTarget]::User)')">复制</button>
+                        </div>
+                        <pre><code>[System.Environment]::SetEnvironmentVariable("ANTHROPIC_BASE_URL","https://ai.facai.cloudns.org",[System.EnvironmentVariableTarget]::User)
+[System.Environment]::SetEnvironmentVariable("ANTHROPIC_AUTH_TOKEN","你的API密钥",[System.EnvironmentVariableTarget]::User)</code></pre>
+                    </div>
+                </div>
+
+                <!-- Permanent CMD -->
+                <div class="subsection">
+                    <h3 class="subsection-title">永久配置（用户级）- CMD</h3>
+                    <div class="code-wrapper">
+                        <div class="code-header">
+                            <span class="code-label">CMD</span>
+                            <button class="copy-button" onclick="copyCode(this, 'setx ANTHROPIC_BASE_URL \"https://ai.facai.cloudns.org\"\nsetx ANTHROPIC_AUTH_TOKEN \"你的API密钥\"')">复制</button>
+                        </div>
+                        <pre><code>setx ANTHROPIC_BASE_URL "https://ai.facai.cloudns.org"
+setx ANTHROPIC_AUTH_TOKEN "你的API密钥"</code></pre>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning">
+                    <strong>重要：</strong>配置完成后，需要重新打开 PowerShell 或 CMD 窗口，环境变量才会生效
+                </div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">6</div>
+                    <div>
+                        <h2 class="step-title">VSCode 插件配置</h2>
+                    </div>
+                </div>
+                <p class="step-description">如果使用 VSCode 的 Claude 插件，需要配置 config.json 文件</p>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">配置文件路径</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">
+                        <code class="inline-code">C:\Users\你的用户名\.claude\config.json</code>
+                        （如果文件不存在，请手动创建）
+                    </p>
+
+                    <div class="code-wrapper">
+                        <div class="code-header">
+                            <span class="code-label">JSON</span>
+                            <button class="copy-button" onclick="copyCode(this, '{\n  \"primaryApiKey\": \"你的API密钥\",\n  \"customBaseUrl\": \"https://ai.facai.cloudns.org\"\n}')">复制</button>
+                        </div>
+                        <pre><code>{
+  "primaryApiKey": "你的API密钥",
+  "customBaseUrl": "https://ai.facai.cloudns.org"
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 7 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">7</div>
+                    <div>
+                        <h2 class="step-title">验证安装</h2>
+                    </div>
+                </div>
+                <p class="step-description">确认 Claude Code 已正确安装并配置</p>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">PowerShell 验证</h3>
+                    <div class="code-wrapper">
+                        <div class="code-header">
+                            <span class="code-label">PowerShell</span>
+                            <button class="copy-button" onclick="copyCode(this, 'claude --version\necho $env:ANTHROPIC_BASE_URL\necho $env:ANTHROPIC_AUTH_TOKEN')">复制</button>
+                        </div>
+                        <pre><code>claude --version
+echo $env:ANTHROPIC_BASE_URL
+echo $env:ANTHROPIC_AUTH_TOKEN</code></pre>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">CMD 验证</h3>
+                    <div class="code-wrapper">
+                        <div class="code-header">
+                            <span class="code-label">CMD</span>
+                            <button class="copy-button" onclick="copyCode(this, 'claude --version\necho %ANTHROPIC_BASE_URL%\necho %ANTHROPIC_AUTH_TOKEN%')">复制</button>
+                        </div>
+                        <pre><code>claude --version
+echo %ANTHROPIC_BASE_URL%
+echo %ANTHROPIC_AUTH_TOKEN%</code></pre>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>验证成功标志：</strong><br>
+                    • claude --version 显示版本号<br>
+                    • BASE_URL 显示 https://ai.facai.cloudns.org<br>
+                    • AUTH_TOKEN 显示您的 API 密钥
+                </div>
+            </div>
+        </div>
+
+        <!-- macOS Content -->
+        <div id="macos" class="tab-content">
+            <!-- Step 1 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">1</div>
+                    <div>
+                        <h2 class="step-title">检查 Git 安装</h2>
+                    </div>
+                </div>
+                <p class="step-description">macOS 通常已预装 Git，首先验证是否存在</p>
+
+                <div class="code-wrapper">
+                    <div class="code-header">
+                        <span class="code-label">Terminal</span>
+                        <button class="copy-button" onclick="copyCode(this, 'git --version')">复制</button>
+                    </div>
+                    <pre><code>git --version</code></pre>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>如果显示版本号：</strong>说明已安装，可跳过此步骤<br>
+                    <strong>如果提示未找到命令：</strong>请按以下方式安装
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">安装 Git</h3>
+                    <div class="code-wrapper">
+                        <div class="code-header">
+                            <span class="code-label">Terminal (使用 Homebrew)</span>
+                            <button class="copy-button" onclick="copyCode(this, 'brew install git')">复制</button>
+                        </div>
+                        <pre><code>brew install git</code></pre>
+                    </div>
+                    <p style="color: var(--text-muted); margin-top: 0.5rem;">
+                        如果没有 Homebrew，请先访问 <a href="https://brew.sh/zh-cn/" target="_blank">brew.sh</a> 安装
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">2</div>
+                    <div>
+                        <h2 class="step-title">安装 Node.js</h2>
+                    </div>
+                </div>
+                <p class="step-description">使用 Homebrew 或官网安装 Node.js。要求版本 ≥ 18</p>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">方法1：使用 Homebrew（推荐）</h3>
+                    <div class="code-wrapper">
+                        <div class="code-header">
+                            <span class="code-label">Terminal</span>
+                            <button class="copy-button" onclick="copyCode(this, 'brew install node')">复制</button>
+                        </div>
+                        <pre><code>brew install node</code></pre>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">方法2：官网下载</h3>
+                    <p style="color: var(--text-muted);">
+                        访问 <a href="https://nodejs.org/" target="_blank">Node.js 官网</a>，下载 macOS 安装包 (.pkg)
+                    </p>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">3</div>
+                    <div>
+                        <h2 class="step-title">验证 Node.js 安装</h2>
+                    </div>
+                </div>
+                <p class="step-description">确认 Node.js 和 npm 已正确安装</p>
+
+                <div class="code-wrapper">
+                    <div class="code-header">
+                        <span class="code-label">Terminal</span>
+                        <button class="copy-button" onclick="copyCode(this, 'node --version\nnpm --version')">复制</button>
+                    </div>
+                    <pre><code>node --version
+npm --version</code></pre>
+                </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">4</div>
+                    <div>
+                        <h2 class="step-title">安装 Claude Code</h2>
+                    </div>
+                </div>
+                <p class="step-description">使用 npm 全局安装 Claude Code CLI 工具</p>
+
+                <div class="code-wrapper">
+                    <div class="code-header">
+                        <span class="code-label">Terminal</span>
+                        <button class="copy-button" onclick="copyCode(this, 'npm install -g @anthropic-ai/claude-code')">复制</button>
+                    </div>
+                    <pre><code>npm install -g @anthropic-ai/claude-code</code></pre>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">5</div>
+                    <div>
+                        <h2 class="step-title">配置环境变量</h2>
+                    </div>
+                </div>
+                <p class="step-description">设置中转站地址和 API 密钥</p>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">临时配置（仅当前会话）</h3>
+                    <div class="code-wrapper">
+                        <div class="code-header">
+                            <span class="code-label">Terminal</span>
+                            <button class="copy-button" onclick="copyCode(this, 'export ANTHROPIC_BASE_URL=\"https://ai.facai.cloudns.org\"\nexport ANTHROPIC_AUTH_TOKEN=\"你的API密钥\"')">复制</button>
+                        </div>
+                        <pre><code>export ANTHROPIC_BASE_URL="https://ai.facai.cloudns.org"
+export ANTHROPIC_AUTH_TOKEN="你的API密钥"</code></pre>
+                    </div>
+                </div>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">永久配置（Shell 配置文件）</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">
+                        根据使用的 shell（bash 或 zsh），将以下内容添加到对应配置文件：
+                    </p>
+
+                    <div class="code-wrapper">
+                        <div class="code-header">
+                            <span class="code-label">~/.bash_profile 或 ~/.zshrc</span>
+                            <button class="copy-button" onclick="copyCode(this, 'export ANTHROPIC_BASE_URL=\"https://ai.facai.cloudns.org\"\nexport ANTHROPIC_AUTH_TOKEN=\"你的API密钥\"')">复制</button>
+                        </div>
+                        <pre><code>export ANTHROPIC_BASE_URL="https://ai.facai.cloudns.org"
+export ANTHROPIC_AUTH_TOKEN="你的API密钥"</code></pre>
+                    </div>
+
+                    <p style="color: var(--text-muted); margin-top: 1rem;">
+                        保存后执行以下命令使配置生效：
+                    </p>
+
+                    <div class="code-wrapper">
+                        <div class="code-header">
+                            <span class="code-label">Terminal</span>
+                            <button class="copy-button" onclick="copyCode(this, 'source ~/.zshrc  # 或 source ~/.bash_profile')">复制</button>
+                        </div>
+                        <pre><code>source ~/.zshrc  # 或 source ~/.bash_profile</code></pre>
+                    </div>
+                </div>
+
+                <div class="alert alert-info">
+                    请将 <code class="inline-code">你的API密钥</code> 替换为在管理台 API 密钥管理中创建的实际密钥
+                </div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">6</div>
+                    <div>
+                        <h2 class="step-title">VSCode 插件配置</h2>
+                    </div>
+                </div>
+                <p class="step-description">如果使用 VSCode 的 Claude 插件，需要配置 config.json 文件</p>
+
+                <div class="subsection">
+                    <h3 class="subsection-title">配置文件路径</h3>
+                    <p style="color: var(--text-muted); margin-bottom: 1rem;">
+                        <code class="inline-code">~/.claude/config.json</code>
+                        （如果文件不存在，请手动创建）
+                    </p>
+
+                    <div class="code-wrapper">
+                        <div class="code-header">
+                            <span class="code-label">JSON</span>
+                            <button class="copy-button" onclick="copyCode(this, '{\n  \"primaryApiKey\": \"你的API密钥\",\n  \"customBaseUrl\": \"https://ai.facai.cloudns.org\"\n}')">复制</button>
+                        </div>
+                        <pre><code>{
+  "primaryApiKey": "你的API密钥",
+  "customBaseUrl": "https://ai.facai.cloudns.org"
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 7 -->
+            <div class="step">
+                <div class="step-header">
+                    <div class="step-number">7</div>
+                    <div>
+                        <h2 class="step-title">验证安装</h2>
+                    </div>
+                </div>
+                <p class="step-description">确认 Claude Code 已正确安装并配置</p>
+
+                <div class="code-wrapper">
+                    <div class="code-header">
+                        <span class="code-label">Terminal</span>
+                        <button class="copy-button" onclick="copyCode(this, 'claude --version\necho $ANTHROPIC_BASE_URL\necho $ANTHROPIC_AUTH_TOKEN')">复制</button>
+                    </div>
+                    <pre><code>claude --version
+echo $ANTHROPIC_BASE_URL
+echo $ANTHROPIC_AUTH_TOKEN</code></pre>
+                </div>
+
+                <div class="alert alert-info">
+                    <strong>验证成功标志：</strong><br>
+                    • claude --version 显示版本号<br>
+                    • BASE_URL 显示 https://ai.facai.cloudns.org<br>
+                    • AUTH_TOKEN 显示您的 API 密钥
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>中转站地址：<a href="http://ai.facai.cloudns.org/" target="_blank">http://ai.facai.cloudns.org/</a></p>
+    </footer>
+
+    <script>
+        // Tab Switching
+        function switchTab(tabName) {
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.closest('.tab-button').classList.add('active');
+        }
+
+        // Copy Code
+        function copyCode(btn, text) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(() => {
+                    const originalText = btn.textContent;
+                    btn.textContent = '已复制';
+                    btn.classList.add('copied');
+
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.classList.remove('copied');
+                    }, 2000);
+                }).catch(err => {
+                    console.error('复制失败:', err);
+                    fallbackCopy(text);
+                });
+            } else {
+                fallbackCopy(text);
+            }
+        }
+
+        // Fallback copy method for older browsers
+        function fallbackCopy(text) {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.opacity = '0';
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                alert('已复制到剪贴板');
+            } catch (err) {
+                alert('复制失败，请手动复制');
+            }
+            document.body.removeChild(textarea);
+        }
+    </script>
+</body>
+</html>
