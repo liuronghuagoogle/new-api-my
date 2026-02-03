@@ -1,11 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git remote:*)",
-      "Bash(git add:*)",
-      "Bash(git commit:*)",
-      "Bash(ssh-keygen:*)",
-      "Bash(git push:*)"
+      "Bash",
+      "Grep"
     ]
   }
 }
