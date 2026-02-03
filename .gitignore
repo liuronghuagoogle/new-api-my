@@ -29,5 +29,5 @@ data/
 .gopath
 
 # Database backups
-# 备份数据库/
-*.sql
+备份数据库/*.sql
+
