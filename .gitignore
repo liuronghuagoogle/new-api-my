@@ -30,4 +30,4 @@ data/
 
 # Database backups
 # 备份数据库/
-# *.sql
+*.sql
