@@ -31,3 +31,15 @@ data/
 # Database backups
 备份数据库/*.sql
 
+new-api-facai.2026-01-25.private-key.pem
+
+# 忽略所有 SQL 文件
+*.sql
+
+# 但是！不忽略 bin 目录下的 SQL 文件
+!bin/*.sql
+
+# 明确忽略备份目录（这里面的 SQL 肯定不要）
+备份数据库/
+
+
