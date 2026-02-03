@@ -16,8 +16,7 @@
 
 services:
   new-api:
-    image: liuronghua35/new-api:latest
-    build: .
+    image: liuronghua35/new-api:1.0.1
     container_name: new-api
     restart: always
     command: --log-dir /app/logs
@@ -27,7 +26,7 @@ services:
       - ./data:/data
       - ./logs:/app/logs
     environment:
-      - SQL_DSN=postgresql://root:123456@postgres:5432/new-api # ⚠️ IMPORTANT: Change the password in production!
+      - SQL_DSN=postgresql://root:MySuperSecurePass2026!@postgres:5432/new-api # ⚠️ IMPORTANT: Change the password in production!
 #      - SQL_DSN=root:123456@tcp(mysql:3306)/new-api  # Point to the mysql service, uncomment if using MySQL
       - REDIS_CONN_STRING=redis://redis
       - TZ=Asia/Shanghai
@@ -61,7 +60,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: root
-      POSTGRES_PASSWORD: 123456  # ⚠️ IMPORTANT: Change this password in production!
+      POSTGRES_PASSWORD: MySuperSecurePass2026!  # ⚠️ IMPORTANT: Change this password in production!
       POSTGRES_DB: new-api
     volumes:
       - pg_data:/var/lib/postgresql/data
