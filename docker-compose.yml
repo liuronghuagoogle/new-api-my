@@ -16,7 +16,7 @@
 
 services:
   new-api:
-    image: liuronghua35/new-api:v0.10.7
+    image: liuronghua35/new-api:v0.10.8
     container_name: new-api
     restart: always
     command: --log-dir /app/logs
