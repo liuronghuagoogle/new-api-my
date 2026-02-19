@@ -16,20 +16,13 @@ export default function StatCard({
   className,
 }: StatCardProps) {
   return (
-    <div
-      className={cn(
-        "rounded-2xl border border-border bg-card/90 p-5 shadow-sm",
-        className
-      )}
-    >
-      <div className="text-xs uppercase tracking-[0.2em] text-mutedForeground">
-        {title}
-      </div>
-      <div className="mt-3 text-3xl font-semibold tracking-tight">{value}</div>
-      <div className="mt-3 flex items-center justify-between text-sm text-mutedForeground">
+    <div className={cn("surface-card surface-card-hover p-5", className)}>
+      <div className="text-[11px] uppercase tracking-[0.2em] text-mutedForeground">{title}</div>
+      <div className="mt-3 text-[32px] font-semibold leading-none tracking-tight text-foreground">{value}</div>
+      <div className="mt-4 flex items-center justify-between text-sm text-mutedForeground">
         <span>{caption}</span>
         {trend && (
-          <span className="rounded-full bg-emerald-500/15 px-2 py-1 text-xs text-emerald-400">
+          <span className="rounded-full border border-success/35 bg-success/12 px-2.5 py-1 text-xs font-medium text-success">
             {trend}
           </span>
         )}

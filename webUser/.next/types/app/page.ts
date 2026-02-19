@@ -1,4 +1,4 @@
-// File: G:\new-api\webUser\app\page.tsx
+// File: /home/codespace/new-api-my/webUser/app/page.tsx
 import * as entry from '../../../app/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

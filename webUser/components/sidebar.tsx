@@ -14,12 +14,12 @@ import {
 import { cn } from "@/lib/utils";
 
 const mainNav = [
-  { label: "仪表盘", icon: Gauge, active: true },
-  { label: "对话", icon: MessageSquareText },
-  { label: "API Keys", icon: KeyRound },
-  { label: "用量", icon: Boxes },
-  { label: "账单", icon: CreditCard },
-  { label: "团队", icon: Users },
+  { label: "仪表盘", icon: Gauge, active: true, hint: "总览" },
+  { label: "对话", icon: MessageSquareText, hint: "Chat" },
+  { label: "API Keys", icon: KeyRound, hint: "凭证" },
+  { label: "用量", icon: Boxes, hint: "Usage" },
+  { label: "账单", icon: CreditCard, hint: "Billing" },
+  { label: "团队", icon: Users, hint: "Members" },
 ];
 
 const bottomNav = [
@@ -30,50 +30,68 @@ const bottomNav = [
 
 export default function Sidebar() {
   return (
-    <aside className="hidden h-full w-64 flex-col border-r border-border bg-background/80 px-5 py-6 backdrop-blur xl:flex">
-      <div className="flex items-center gap-2">
-        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primaryForeground">
-          AI
+    <aside className="hidden h-screen w-[292px] flex-col border-r border-border/70 bg-panel/80 p-5 backdrop-blur xl:flex">
+      <div className="surface-card p-4">
+        <div className="flex items-center gap-3">
+          <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-border/70 bg-elevated text-[11px] font-semibold tracking-[0.16em] text-foreground">
+            CL
+          </div>
+          <div>
+            <p className="text-[11px] uppercase tracking-[0.18em] text-mutedForeground">Workspace</p>
+            <h2 className="mt-1 text-base font-semibold tracking-tight">Claude Console</h2>
+          </div>
         </div>
-        <div className="text-sm font-semibold tracking-tight">AI Console</div>
       </div>
 
-      <div className="mt-8 flex flex-1 flex-col">
-        <div className="text-xs uppercase tracking-[0.2em] text-mutedForeground">
-          Overview
+      <div className="mt-6 rounded-2xl border border-border/65 bg-card/65 p-2">
+        <div className="grid grid-cols-2 gap-2 text-xs">
+          <button className="rounded-xl border border-border/70 bg-elevated px-3 py-2 text-left text-foreground">
+            <div className="text-[10px] uppercase tracking-[0.16em] text-mutedForeground">Plan</div>
+            <div className="mt-1 font-medium">Pro</div>
+          </button>
+          <button className="rounded-xl border border-border/70 bg-elevated px-3 py-2 text-left text-foreground">
+            <div className="text-[10px] uppercase tracking-[0.16em] text-mutedForeground">Region</div>
+            <div className="mt-1 font-medium">Global</div>
+          </button>
         </div>
-        <nav className="mt-4 flex flex-col gap-1">
-          {mainNav.map((item) => (
+      </div>
+
+      <div className="mt-7 px-1 text-[11px] uppercase tracking-[0.2em] text-mutedForeground">Navigation</div>
+      <nav className="mt-3 flex flex-col gap-1.5">
+        {mainNav.map((item) => (
+          <button
+            key={item.label}
+            className={cn(
+              "group flex items-center justify-between rounded-xl border border-transparent px-3.5 py-2.5 text-left transition-all",
+              item.active
+                ? "border-border/70 bg-card text-foreground shadow-[0_1px_2px_rgba(39,28,19,0.08)]"
+                : "text-mutedForeground hover:border-border/55 hover:bg-card/75 hover:text-foreground"
+            )}
+          >
+            <span className="flex items-center gap-3 text-sm">
+              <item.icon className={cn("h-4 w-4", item.active ? "text-foreground" : "text-mutedForeground group-hover:text-foreground")} />
+              {item.label}
+            </span>
+            <span className="rounded-md bg-muted/50 px-1.5 py-0.5 text-[10px] uppercase tracking-[0.12em] text-mutedForeground">
+              {item.hint}
+            </span>
+          </button>
+        ))}
+      </nav>
+
+      <div className="mt-auto rounded-2xl border border-border/65 bg-card/70 p-3">
+        <div className="mb-2 px-1 text-[11px] uppercase tracking-[0.18em] text-mutedForeground">System</div>
+        <nav className="flex flex-col gap-1">
+          {bottomNav.map((item) => (
             <button
               key={item.label}
-              className={cn(
-                "flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-mutedForeground transition-colors hover:bg-muted hover:text-foreground",
-                item.active &&
-                  "bg-muted text-foreground shadow-sm ring-1 ring-border"
-              )}
+              className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-mutedForeground transition-colors hover:bg-muted/65 hover:text-foreground"
             >
               <item.icon className="h-4 w-4" />
               {item.label}
             </button>
           ))}
         </nav>
-
-        <div className="mt-auto">
-          <div className="mb-3 text-xs uppercase tracking-[0.2em] text-mutedForeground">
-            Preferences
-          </div>
-          <nav className="flex flex-col gap-1">
-            {bottomNav.map((item) => (
-              <button
-                key={item.label}
-                className="flex items-center gap-3 rounded-xl px-3 py-2 text-sm text-mutedForeground transition-colors hover:bg-muted hover:text-foreground"
-              >
-                <item.icon className="h-4 w-4" />
-                {item.label}
-              </button>
-            ))}
-          </nav>
-        </div>
       </div>
     </aside>
   );

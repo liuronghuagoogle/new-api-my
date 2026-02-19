@@ -3,41 +3,77 @@
 @tailwind utilities;
 
 :root {
-  --background: 210 20% 98%;
-  --foreground: 222 47% 11%;
-  --card: 0 0% 100%;
-  --card-foreground: 222 47% 11%;
-  --primary: 222 47% 11%;
-  --primary-foreground: 210 40% 98%;
-  --muted: 210 40% 96%;
-  --muted-foreground: 215 16% 47%;
-  --border: 214 32% 91%;
-  --radius: 14px;
+  --background: 32 16% 93%;
+  --foreground: 26 10% 18%;
+
+  --card: 36 18% 97%;
+  --card-foreground: 24 12% 16%;
+  --panel: 34 17% 95%;
+  --elevated: 40 22% 98%;
+
+  --primary: 28 9% 24%;
+  --primary-foreground: 34 22% 95%;
+
+  --muted: 32 12% 89%;
+  --muted-foreground: 28 8% 42%;
+  --subtle: 30 12% 85%;
+  --subtle-foreground: 26 8% 34%;
+
+  --border: 32 12% 79%;
+
+  --success: 152 19% 36%;
+  --success-foreground: 42 22% 96%;
+  --warning: 36 38% 46%;
+  --warning-foreground: 30 18% 14%;
+  --danger: 8 28% 44%;
+  --danger-foreground: 42 22% 96%;
+
+  --radius: 16px;
 }
 
 .dark {
-  --background: 222 47% 7%;
-  --foreground: 210 40% 98%;
-  --card: 222 47% 10%;
-  --card-foreground: 210 40% 98%;
-  --primary: 210 40% 98%;
-  --primary-foreground: 222 47% 11%;
-  --muted: 217 19% 14%;
-  --muted-foreground: 215 20% 70%;
-  --border: 217 19% 20%;
+  --background: 24 9% 10%;
+  --foreground: 34 14% 90%;
+
+  --card: 24 9% 12%;
+  --card-foreground: 34 14% 90%;
+  --panel: 24 8% 14%;
+  --elevated: 24 8% 16%;
+
+  --primary: 34 14% 90%;
+  --primary-foreground: 24 9% 12%;
+
+  --muted: 24 7% 20%;
+  --muted-foreground: 28 8% 68%;
+  --subtle: 24 7% 24%;
+  --subtle-foreground: 28 8% 74%;
+
+  --border: 24 8% 28%;
+
+  --success: 152 24% 58%;
+  --success-foreground: 24 9% 12%;
+  --warning: 36 52% 64%;
+  --warning-foreground: 24 9% 12%;
+  --danger: 8 46% 64%;
+  --danger-foreground: 24 9% 12%;
 }
 
 * {
   border-color: hsl(var(--border));
 }
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
 body {
-  background: hsl(var(--background));
+  background:
+    radial-gradient(circle at 8% 2%, hsl(var(--elevated)) 0%, transparent 35%),
+    radial-gradient(circle at 90% -10%, hsl(var(--panel)) 0%, transparent 42%),
+    hsl(var(--background));
   color: hsl(var(--foreground));
+  -webkit-font-smoothing: antialiased;
 }
 
 .scrollbar-hidden::-webkit-scrollbar {
@@ -45,9 +81,41 @@ body {
   height: 0;
 }
 
-.bg-grid {
-  background-image:
-    linear-gradient(to right, hsl(var(--border)) 1px, transparent 1px),
-    linear-gradient(to bottom, hsl(var(--border)) 1px, transparent 1px);
-  background-size: 36px 36px;
+@layer components {
+  .surface-card {
+    @apply rounded-[var(--radius)] border border-border/75 bg-card backdrop-blur-sm;
+    background-color: hsl(var(--card) / 0.92);
+    box-shadow:
+      0 1px 2px rgba(40, 30, 18, 0.05),
+      0 14px 34px rgba(40, 30, 18, 0.06);
+  }
+
+  .surface-card-hover {
+    @apply transition-all duration-200;
+  }
+
+  .surface-card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 2px 4px rgba(40, 30, 18, 0.08),
+      0 22px 44px rgba(40, 30, 18, 0.1);
+  }
+
+  .button-primary {
+    @apply rounded-full border border-transparent bg-primary px-4 py-2 text-sm font-medium text-primaryForeground;
+    box-shadow: 0 1px 2px rgba(36, 28, 20, 0.24), 0 8px 22px rgba(36, 28, 20, 0.2);
+  }
+
+  .button-primary:hover {
+    @apply -translate-y-0.5;
+    box-shadow: 0 2px 6px rgba(36, 28, 20, 0.26), 0 14px 26px rgba(36, 28, 20, 0.25);
+  }
+
+  .button-ghost {
+    @apply rounded-full border border-border/80 bg-card/70 px-4 py-2 text-sm font-medium text-foreground transition-colors;
+  }
+
+  .button-ghost:hover {
+    @apply bg-muted/60;
+  }
 }
