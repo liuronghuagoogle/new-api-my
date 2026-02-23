@@ -7,7 +7,8 @@ This is an AI API gateway/proxy built with Go. It aggregates 40+ upstream AI pro
 ## Tech Stack
 
 - **Backend**: Go 1.22+, Gin web framework, GORM v2 ORM
-- **Frontend**: React 18, Vite, Semi Design UI (@douyinfe/semi-ui)
+- **Frontend (web/)**: React 18, Vite, Semi Design UI (@douyinfe/semi-ui) — 管理员端 + 旧版用户端
+- **Frontend (webUser/)**: Next.js 14, Tailwind CSS 3.4, Radix UI + shadcn/ui 模式, TypeScript — 新版用户端
 - **Databases**: SQLite, MySQL, PostgreSQL (all three must be supported)
 - **Cache**: Redis (go-redis) + in-memory cache
 - **Auth**: JWT, WebAuthn/Passkeys, OAuth (GitHub, Discord, OIDC, etc.)
@@ -33,9 +34,39 @@ types/         — Type definitions (relay formats, file sources, errors)
 i18n/          — Backend internationalization (go-i18n, en/zh)
 oauth/         — OAuth provider implementations
 pkg/           — Internal packages (cachex, ionet)
-web/           — React frontend
+web/           — React frontend (管理员端 + 旧版用户端, Vite + Semi Design)
   web/src/i18n/  — Frontend internationalization (i18next, zh/en/fr/ru/ja/vi)
+webUser/       — 新版用户端前端 (Next.js + Tailwind + Radix UI/shadcn)
+  webUser/app/       — Next.js App Router 页面
+  webUser/components/ — 业务组件 + UI 原子组件 (components/ui/)
+  webUser/lib/       — 工具函数 (cn() 等)
 ```
+
+## webUser — 新版用户端 UI
+
+### 定位与用途
+
+`webUser/` 是独立开发的**面向普通用户的新版控制台 UI**，用于替代 `web/` 中用户侧的页面体验。管理员端仍使用 `web/`，以便与上游项目保持同步。
+
+- **目标用户**：API 使用者（非管理员），提供仪表盘、API Key 管理、用量查看、账单、团队等功能
+- **与 web/ 的关系**：共享同一套后端 API 接口（与 `web/` 调用的接口完全一致），但前端代码完全独立，无代码共享
+- **与上游的关系**：`web/` 负责跟随上游更新（管理员端 + 旧版用户端），`webUser/` 是本项目自行维护的新 UI，不受上游变更影响
+
+### 技术栈
+
+| 维度 | webUser | web（现有） |
+|------|---------|------------|
+| 框架 | Next.js 14 (App Router, TypeScript) | React 18 + Vite (SPA, JSX) |
+| CSS | Tailwind CSS 3.4 + CSS 变量 (HSL) | Semi Design 内置样式 |
+| UI 组件 | Radix UI 原语 + shadcn/ui 模式 | Semi Design (@douyinfe/semi-ui) |
+| 图标 | lucide-react | Semi Icons + lucide-react |
+| 动画 | framer-motion | — |
+| 路由 | Next.js App Router (文件系统路由) | react-router-dom v6 |
+| 包管理 | bun (推荐) | bun |
+
+### 当前状态
+
+项目处于早期开发阶段，已实现 Dashboard 仪表盘页面的视觉原型，侧边栏定义了完整导航结构（仪表盘、对话、API Keys、用量、账单、团队、设置等），后续页面待逐步开发并接入后端 API。
 
 ## Internationalization (i18n)
 
