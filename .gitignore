@@ -1,47 +1,86 @@
-.idea
-.vscode
-.zed
-upload
+# ========================
+# 操作系统
+# ========================
+.DS_Store
+Thumbs.db
+
+# ========================
+# IDE / 编辑器
+# ========================
+.idea/
+.vscode/
+.zed/
+.cursor/
+
+# ========================
+# AI 工具 / Skills
+# ========================
+.claude/
+.agents/
+openspec/
+skills-lock.json
+
+# ========================
+# Go
+# ========================
 *.exe
 *.db
-build
 *.db-journal
-logs
-web/dist
-.env
+build/
 one-api
 new-api
 /__debug_bin*
-.DS_Store
-tiktoken_cache
-.eslintcache
-.gocache
+.gocache/
+.gocache-temp/
 .gomodcache/
-.cache
-web/bun.lock
-plans
+.gopath/
+tiktoken_cache/
 
-electron/node_modules
-electron/dist
-data/
-.gomodcache/
-.gocache-temp
-.gopath
-
-# Database backups
-备份数据库/*.sql
-
-new-api-facai.2026-01-25.private-key.pem
-
-# 忽略所有 SQL 文件
-*.sql
+# ========================
+# Node.js 通用
+# ========================
 node_modules/
 *.log
-# 但是！不忽略 bin 目录下的 SQL 文件
-!bin/*.sql
+.eslintcache
+.cache/
 .nest/
 
-# 明确忽略备份目录（这里面的 SQL 肯定不要）
+# ========================
+# web/ (管理端 React SPA)
+# ========================
+web/dist/
+web/bun.lock
+
+# ========================
+# webUser/ (用户端 Next.js)
+# ========================
+webUser/.next/
+webUser/.env.local
+webUser/.vercel/
+webUser/tsconfig.tsbuildinfo
+webUser/package-lock.json
+
+# ========================
+# 环境 & 敏感文件
+# ========================
+.env
+.env.local
+.env.*.local
+*.pem
+*.sql
+!bin/*.sql
+
+# ========================
+# 数据 & 日志
+# ========================
+logs/
+data/
+upload/
 备份数据库/
+plans/
 
-
+# ========================
+# Electron
+# ========================
+electron/node_modules/
+electron/dist/
