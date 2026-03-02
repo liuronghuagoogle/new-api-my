@@ -207,7 +207,7 @@ export default function HomePage() {
               <span className="text-sm text-muted-foreground">{systemName}</span>
             </div>
             <p className="text-caption text-muted-foreground">
-              Powered by New API
+              Powered by vx:aimiertao
             </p>
           </div>
         </div>

@@ -26,7 +26,7 @@ const navItems = [
   { label: "API 密钥", href: "/tokens", icon: KeyRound },
   { label: "用量日志", href: "/logs", icon: FileText },
   { label: "钱包充值", href: "/topup", icon: Wallet },
-  { label: "模型定价", href: "/pricing", icon: Receipt },
+  { label: "模型列表", href: "/pricing", icon: Receipt },
 ];
 
 const bottomItems = [

@@ -202,7 +202,7 @@ export default function PricingPage() {
 
   return (
     <>
-      <Topbar title="模型定价" description="可用模型列表与费率信息" />
+      <Topbar title="模型列表" description="可用模型列表与费率信息" />
       <div className="flex-1 overflow-y-auto scrollbar-thin">
         <div className="mx-auto max-w-6xl space-y-6 px-6 py-6">
 
@@ -293,7 +293,7 @@ export default function PricingPage() {
                       <SortableHead field="type" label="类型" />
                       <SortableHead field="prompt" label="输入价格" className="text-right" />
                       <SortableHead field="completion" label="输出价格" className="text-right" />
-                      <TableHead>端点</TableHead>
+                      <TableHead>可用端点类型</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>

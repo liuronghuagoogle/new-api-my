@@ -16,7 +16,7 @@
 
 services:
   new-api:
-    image: liuronghua35/new-api:latest
+    image: calciumion/new-api:latest
     container_name: new-api
     restart: always
     command: --log-dir /app/logs

@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import {
   User, Shield, Bell, Key, Mail, Lock,
-  Globe, Check, Loader2, ExternalLink,
+  Globe, Check, Loader2, ExternalLink, Copy,
 } from "lucide-react";
 import { useAuth } from "@/components/auth/auth-provider";
 import { updatePassword, updateEmail } from "@/lib/api-hooks";
@@ -137,8 +137,16 @@ export default function SettingsPage() {
   const displayName = user?.display_name || user?.username || "用户";
   const displayEmail = user?.email || "未设置邮箱";
   const displayGroup = user?.group || "default";
+  const isVipGroup = /vip/i.test(displayGroup);
   const displayRole = getRoleLabel(user?.role ?? 1);
   const roleBadgeVariant = getRoleBadgeVariant(user?.role ?? 1);
+
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+  function handleCopy(value: string, field: string) {
+    navigator.clipboard.writeText(value);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 2000);
+  }
 
   return (
     <>
@@ -156,8 +164,32 @@ export default function SettingsPage() {
                 <div className="flex-1">
                   <h2 className="font-display text-heading-3 font-semibold">{displayName}</h2>
                   <p className="text-body-sm text-muted-foreground">{displayEmail}</p>
-                  <div className="mt-2 flex items-center gap-2">
-                    <Badge variant="secondary">{displayGroup}</Badge>
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    <Badge
+                      variant="outline"
+                      className="cursor-pointer gap-1 font-mono"
+                      onClick={() => handleCopy(String(user?.id ?? ""), "id")}
+                    >
+                      ID: {user?.id}
+                      {copiedField === "id" ? (
+                        <Check className="h-3 w-3 text-green-600" />
+                      ) : (
+                        <Copy className="h-3 w-3 text-muted-foreground" />
+                      )}
+                    </Badge>
+                    <Badge
+                      variant="outline"
+                      className="cursor-pointer gap-1 font-mono"
+                      onClick={() => handleCopy(user?.username ?? "", "username")}
+                    >
+                      {user?.username}
+                      {copiedField === "username" ? (
+                        <Check className="h-3 w-3 text-green-600" />
+                      ) : (
+                        <Copy className="h-3 w-3 text-muted-foreground" />
+                      )}
+                    </Badge>
+                    <Badge variant={isVipGroup ? "warning" : "secondary"}>{displayGroup}</Badge>
                     <Badge variant={roleBadgeVariant}>{displayRole}</Badge>
                   </div>
                 </div>

@@ -1,7 +1,7 @@
 /* ── 业务 API 调用 ── */
 
-import { get, post, put, del, type ApiResponse } from "./api";
-import type { PageInfo, Token, Log, LogStat, QuotaData, Pricing, PricingResponse, CheckinStatusResponse, CheckinResponse } from "./types";
+import { get, post, put, del, getAuthHeaders, ApiError } from "./api";
+import type { PageInfo, Token, Log, LogStat, QuotaData, PricingResponse, CheckinStatusResponse, CheckinResponse } from "./types";
 
 /* ── Token ── */
 export async function getTokens(page = 1, pageSize = 10, keyword = ""): Promise<PageInfo<Token>> {
@@ -23,13 +23,25 @@ export async function createToken(data: {
   await post("/api/token/", data);
 }
 
-export async function updateToken(data: Partial<Token> & { id: number }): Promise<Token> {
-  const res = await put<Token>("/api/token/", data);
+export async function updateToken(data: Partial<Token> & { id: number }, statusOnly = false): Promise<Token> {
+  const url = statusOnly ? "/api/token/?status_only=true" : "/api/token/";
+  const res = await put<Token>(url, data);
   return res.data;
 }
 
 export async function deleteToken(id: number): Promise<void> {
   await del(`/api/token/${id}`);
+}
+
+/* ── User Groups ── */
+export interface GroupInfo {
+  ratio: number | string;
+  desc: string;
+}
+
+export async function getUserGroups(): Promise<Record<string, GroupInfo>> {
+  const res = await get<Record<string, GroupInfo>>("/api/user/self/groups");
+  return res.data;
 }
 
 /* ── Logs ── */
@@ -74,9 +86,21 @@ export async function getModels(): Promise<string[]> {
 }
 
 /* ── Pricing ── */
+// pricing API 响应结构非标准（vendors/group_ratio 等字段与 success/data 同级），
+// 不能用通用 get() 自动解包 .data，需直接 fetch 返回完整响应体
 export async function getPricing(): Promise<PricingResponse> {
-  const res = await get<PricingResponse>("/api/pricing");
-  return res.data;
+  const raw = await fetch("/api/pricing", {
+    headers: getAuthHeaders(),
+    credentials: "include",
+  });
+  if (raw.status === 401) {
+    throw new ApiError(401, "登录已过期");
+  }
+  const body = await raw.json();
+  if (!raw.ok || !body.success) {
+    throw new ApiError(raw.status, body.message || `HTTP ${raw.status}`);
+  }
+  return body as PricingResponse;
 }
 
 /* ── Notice ── */

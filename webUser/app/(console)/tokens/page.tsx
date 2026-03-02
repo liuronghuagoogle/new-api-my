@@ -16,7 +16,8 @@ import {
   Plus, Search, Copy, Trash2, ToggleLeft, ToggleRight, Eye, EyeOff,
   ChevronLeft, ChevronRight, Loader2, AlertCircle, Check,
 } from "lucide-react";
-import { getTokens, createToken, deleteToken, updateToken } from "@/lib/api-hooks";
+import { getTokens, createToken, deleteToken, updateToken, getUserGroups } from "@/lib/api-hooks";
+import type { GroupInfo } from "@/lib/api-hooks";
 import type { Token } from "@/lib/types";
 import { TokenStatus, TokenStatusLabel, formatQuota, formatTime } from "@/lib/types";
 
@@ -60,8 +61,16 @@ export default function TokensPage() {
   const [createUnlimited, setCreateUnlimited] = useState(true);
   const [createExpired, setCreateExpired] = useState("");
   const [createModelLimits, setCreateModelLimits] = useState("");
+  const [createGroup, setCreateGroup] = useState("");
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
+
+  /* ---- State: user groups ---- */
+  const [groups, setGroups] = useState<Record<string, GroupInfo>>({});
+
+  useEffect(() => {
+    getUserGroups().then(setGroups).catch(() => {});
+  }, []);
 
   /* ---- State: delete confirmation ---- */
   const [deleteTarget, setDeleteTarget] = useState<Token | null>(null);
@@ -128,6 +137,7 @@ export default function TokensPage() {
     setCreateUnlimited(true);
     setCreateExpired("");
     setCreateModelLimits("");
+    setCreateGroup("");
     setCreateError(null);
   };
 
@@ -171,6 +181,10 @@ export default function TokensPage() {
         data.model_limits = createModelLimits.trim();
       }
 
+      if (createGroup) {
+        data.group = createGroup;
+      }
+
       await createToken(data);
       setCreateOpen(false);
       resetCreateForm();
@@ -209,16 +223,7 @@ export default function TokensPage() {
 
     setTogglingId(token.id);
     try {
-      await updateToken({
-        id: token.id,
-        status: newStatus,
-        name: token.name,
-        remain_quota: token.remain_quota,
-        unlimited_quota: token.unlimited_quota,
-        expired_time: token.expired_time,
-        model_limits_enabled: token.model_limits_enabled,
-        model_limits: token.model_limits,
-      });
+      await updateToken({ id: token.id, status: newStatus }, true);
       await fetchTokens();
     } catch (err: any) {
       console.error("Failed to toggle token status:", err);
@@ -525,6 +530,28 @@ export default function TokensPage() {
                 onChange={(e) => setCreateExpired(e.target.value)}
               />
               <p className="text-caption text-muted-foreground">留空表示永不过期</p>
+            </div>
+            <div className="space-y-1.5">
+              <label className="text-sm font-medium">令牌分组</label>
+              {Object.keys(groups).length > 0 ? (
+                <select
+                  value={createGroup}
+                  onChange={(e) => setCreateGroup(e.target.value)}
+                  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                >
+                  <option value="">默认（跟随用户分组）</option>
+                  {Object.entries(groups).map(([key, info]) => (
+                    <option key={key} value={key}>
+                      {key}{info.desc ? ` - ${info.desc}` : ""}{info.ratio ? ` (倍率: ${info.ratio})` : ""}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <select disabled className="flex h-9 w-full rounded-md border border-input bg-muted px-3 py-1 text-sm text-muted-foreground">
+                  <option>管理员未设置可选分组</option>
+                </select>
+              )}
+              <p className="text-caption text-muted-foreground">选择令牌使用的渠道分组</p>
             </div>
             <div className="space-y-1.5">
               <label className="text-sm font-medium">允许的模型（可选）</label>
