@@ -17,7 +17,8 @@ import {
   Square,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { getModels } from "@/lib/api-hooks";
+import { getModels, getUserGroups } from "@/lib/api-hooks";
+import type { GroupInfo } from "@/lib/api-hooks";
 import { fetchStream } from "@/lib/api";
 
 interface Message {
@@ -32,6 +33,8 @@ export default function PlaygroundPage() {
   const [modelsLoading, setModelsLoading] = useState(true);
   const [modelsError, setModelsError] = useState("");
   const [selectedModel, setSelectedModel] = useState("");
+  const [groups, setGroups] = useState<Record<string, GroupInfo>>({});
+  const [selectedGroup, setSelectedGroup] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [temperature, setTemperature] = useState("0.7");
@@ -46,7 +49,7 @@ export default function PlaygroundPage() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Fetch models on mount
+  // Fetch models and groups on mount
   useEffect(() => {
     let cancelled = false;
     async function fetchModels() {
@@ -68,7 +71,17 @@ export default function PlaygroundPage() {
         if (!cancelled) setModelsLoading(false);
       }
     }
+    async function fetchGroups() {
+      try {
+        const data = await getUserGroups();
+        if (cancelled) return;
+        setGroups(data);
+      } catch {
+        // 分组加载失败不阻塞页面
+      }
+    }
     fetchModels();
+    fetchGroups();
     return () => {
       cancelled = true;
     };
@@ -121,6 +134,7 @@ export default function PlaygroundPage() {
           stream: true,
           temperature: parseFloat(temperature),
           max_tokens: parseInt(maxTokens, 10),
+          ...(selectedGroup ? { group: selectedGroup } : {}),
         }),
       });
 
@@ -233,7 +247,7 @@ export default function PlaygroundPage() {
       abortControllerRef.current = null;
       setIsLoading(false);
     }
-  }, [input, isLoading, selectedModel, systemPrompt, messages, temperature, maxTokens]);
+  }, [input, isLoading, selectedModel, selectedGroup, systemPrompt, messages, temperature, maxTokens]);
 
   // Reset conversation
   const handleReset = useCallback(() => {
@@ -270,6 +284,7 @@ export default function PlaygroundPage() {
                 </Button>
               </div>
             ) : (
+              <>
               <select
                 value={selectedModel}
                 onChange={(e) => setSelectedModel(e.target.value)}
@@ -281,6 +296,21 @@ export default function PlaygroundPage() {
                   </option>
                 ))}
               </select>
+              {Object.keys(groups).length > 0 && (
+                <select
+                  value={selectedGroup}
+                  onChange={(e) => setSelectedGroup(e.target.value)}
+                  className="rounded-md border border-border bg-transparent px-3 py-1.5 text-sm font-medium"
+                >
+                  <option value="">默认分组</option>
+                  {Object.entries(groups).map(([key, info]) => (
+                    <option key={key} value={key}>
+                      {key}{info.desc ? ` - ${info.desc}` : ""}
+                    </option>
+                  ))}
+                </select>
+              )}
+              </>
             )}
             <Badge variant="secondary">
               温度：{temperature}

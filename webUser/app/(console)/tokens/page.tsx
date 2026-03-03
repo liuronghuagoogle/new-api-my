@@ -347,6 +347,7 @@ export default function TokensPage() {
                       <TableHead>名称</TableHead>
                       <TableHead>密钥</TableHead>
                       <TableHead>状态</TableHead>
+                      <TableHead>分组</TableHead>
                       <TableHead className="text-right">已用</TableHead>
                       <TableHead className="text-right">额度</TableHead>
                       <TableHead>创建时间</TableHead>
@@ -379,6 +380,11 @@ export default function TokensPage() {
                           </TableCell>
                           <TableCell>
                             <Badge variant={variant}>{label}</Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={/vip/i.test(token.group) ? "warning" : "secondary"}>
+                              {token.group || "default"}
+                            </Badge>
                           </TableCell>
                           <TableCell className="text-right tabular-nums">
                             ${formatQuota(token.used_quota)}
@@ -435,7 +441,7 @@ export default function TokensPage() {
                     })}
                     {tokens.length === 0 && (
                       <TableRow>
-                        <TableCell colSpan={7} className="py-12 text-center">
+                        <TableCell colSpan={8} className="py-12 text-center">
                           <div className="flex flex-col items-center gap-2">
                             <AlertCircle className="h-5 w-5 text-muted-foreground" />
                             <span className="text-body-sm text-muted-foreground">
