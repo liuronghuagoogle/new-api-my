@@ -20,6 +20,7 @@ func SetWebRouter(router *gin.Engine, buildFS embed.FS, indexPage []byte, fronte
 	router.Use(middleware.Cache())
 	router.Use(static.Serve("/", common.EmbedFolder(buildFS, "web/dist")))
 	router.NoRoute(func(c *gin.Context) {
+		c.Set(middleware.RouteTagKey, "web")
 		uri := c.Request.RequestURI
 		if strings.HasPrefix(uri, "/v1") || strings.HasPrefix(uri, "/api") || strings.HasPrefix(uri, "/assets") {
 			controller.RelayNotFound(c)
